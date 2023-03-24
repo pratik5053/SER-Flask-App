@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="cont">
+    Welcome,<span id="blink">|</span>
+</div>
+
+<div class="uinput">
+    <form action="/">
+        <input type="file" name="fileupload" value="fileupload" id="fileupload">
+        <label for="fileupload">Select an Audio file</label>
+        <input type="reset" value="Reset">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<div class="pic">
+    <div class="lbl">
+        <h2>WaveForm 01</h2>
+        <img src="../static/3439278_61675.jpg" alt="" srcset="">
+    </div>
+    <div class="lbl">
+        <h2>WaveForm 02</h2>
+        <img src="../static/3833274_80006.jpg" alt="" srcset="">
+    </div>
+</div>
+<script type="text/javascript">
+    var blink =
+        document.getElementById('blink');
+
+    setInterval(function () {
+        blink.style.opacity =
+            (blink.style.opacity == 0 ? 1 : 0);
+    }, 500); 
+</script>
+</body>
+
+</html>
+{% endblock %}
