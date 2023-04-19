@@ -2,21 +2,38 @@
 {% block body %}
 
 <link rel="stylesheet" href={{ url_for('static', filename='login.css' ) }}>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 <div class="login-page">
     <div class="form">
-        <form class="register-form">
-            <input type="text" placeholder="name" />
-            <input type="password" placeholder="password" />
+        <!-- <form class="register-form">
+            <input type="text" placeholder="name" name="username" />
+            <input type="password" placeholder="password" name="password"/>
             <input type="text" placeholder="email address" />
             <button>create</button>
             <p class="message">Already registered? <a href="#">Sign In</a></p>
-        </form>
-        <form class="login-form">
-            <input type="text" placeholder="username" />
-            <input type="password" placeholder="password" />
+        </form> -->
+        <form method="POST" class="login-form">
+            <input type="text" placeholder="username" name="username" />
+            <input type="password" placeholder="password" name="password" />
             <button>login</button>
             <p class="message">Not registered? <a href="#">Create an account</a></p>
         </form>
+    </div>
+    <div class="footer">
+        <b> Follow us on </b>
+        <div class="icons">
+            <a class="lk" href="https://github.com/" target="_blank" class="social"><i
+                    class="fab fa-github"></i></a>
+            <a class="lk" href="https://www.instagram.com/" target="_blank" class="social"><i
+                    class="fab fa-instagram"></i></a>
+            <a class="lk" href="https://medium.com/" target="_blank" class="social"><i
+                    class="fab fa-medium"></i></a>
+            <a class="lk" href="https://twitter.com/" target="_blank" class="social"><i
+                    class="fab fa-twitter-square"></i></a>
+            <a class="lk" href="https://linkedin.com/in/pratik5053/" target="_blank" class="social"><i
+                    class="fab fa-linkedin"></i></a>
+        </div>
     </div>
 </div>
 </body>
