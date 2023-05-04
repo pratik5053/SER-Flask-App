@@ -5,8 +5,8 @@
   margin: 0;
 }
 
-body{
-  background-color: #000;
+body {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 span {
@@ -217,8 +217,34 @@ a {
   width: 75vw;
   /* padding: 10px; */
   /* height: 56vh; */
-  height: 150px;
+  height: 80px;
   border-radius: 15px;
+}
+.cont > span {
+  font-size: 50px;
+  color: white;
+}
+.output {
+  /* color: rgba(255, 255, 255, 0.5); */
+  font-family: 'Courier New', Courier, monospace;
+  color: white;
+  position: relative;
+  font-size: 40px;
+  line-height: 10px;
+  height: 70px;
+  margin: auto;
+  width: 35%;
+  padding: 10px;
+}
+
+.audio {
+  margin: auto;
+  width: 60%;
+  padding: 10px;
+}
+
+audio {
+  width: 50%;
 }
 
 #fileupload {

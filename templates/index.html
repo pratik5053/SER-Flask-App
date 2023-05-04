@@ -6,12 +6,23 @@
 </div>
 
 <div class="uinput">
-    <form action="/">
-        <input type="file" name="fileupload" value="fileupload" id="fileupload">
-        <label for="fileupload">Select an Audio file</label>
+    <form method="POST" action="/predict" enctype="multipart/form-data">
+        <input type="file" accept="audio/wav" name="fileup">
+        <label for="fileup">Select an Audio file</label>
         <input type="reset" value="Reset">
         <input type="submit" value="Submit">
     </form>
+</div>
+
+<div class="audio">
+    <audio controls>
+        <source src="{{ url_for('play_audio') }}" type="audio/wav">
+    </audio>
+</div>
+
+<div class="output">
+    <br>{{ pred }}<br>
+    <!-- pred -->
 </div>
 <div class="pic">
     <div class="lbl">

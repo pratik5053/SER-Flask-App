@@ -563,7 +563,8 @@ h3 {
 
 h2,
 h3 {
-  color: #322c2c;
+  /* color: #322c2c; */
+  color: #ffffff;
   font-weight: 400;
 }
 

@@ -1,6 +1,62 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_file
+import os
+import librosa
+import numpy as np
+import pandas as pd
+import soundfile as sf
+from tensorflow import keras
+import matplotlib.pyplot as plt
+from keras.models import load_model
+import pickle
 
 app = Flask(__name__)
+
+# model=pickle.load(open('model.pkl','rb'))
+model = load_model('SER.h5')
+
+def resize_array(array):
+    new_matrix = np.zeros((30,150))   # Initialize the new matrix shape with an array 30X150 of zeros
+    for i in range(30):               # Iterate rows
+        for j in range(150):          # Iterate columns
+            try:                                 # the mfccs of a sample will replace the matrix of zeros, then cutting the array up to 150
+                new_matrix[i][j] = array[i][j]
+            except IndexError:                   # if mfccs of a sample is shorter than 150, then keep looping to extend lenght to 150 with 0s
+                pass
+    return new_matrix
+
+def preprocessing(audio):
+    data, sampling_rate = librosa.load(audio,sr=16000)
+    sampling_rate = np.array(sampling_rate)
+    mfccs = librosa.feature.mfcc(y=data, sr=sampling_rate, n_mfcc=30)
+    print("MFCCS : ",mfccs)
+    r_mfccs=resize_array(mfccs)
+    m_arr = np.array([r_mfccs])
+    # t_mean=np.mean(r_mfccs, axis=0)
+    # t_std=np.std(r_mfccs, axis=0)
+    # print("tstd : ",t_std)
+    # m_arr=(m_arr - t_mean)/t_std
+    m_arr = m_arr[..., None]
+    print(m_arr)
+    return m_arr
+
+def waveform(audio):
+    data, sampling_rate = librosa.load(audio,sr=16000)
+    plt.figure(figsize=(15, 5))
+    librosa.display.waveshow(data, sr=sampling_rate)
+    plt.savefig('waveform.png')
+
+def res(pred_arr):
+    print(pred_arr)
+    livePred=pred_arr.argmax(axis=1)
+    print(livePred)
+    liveabc=livePred.astype(int).flatten()
+    df = pd.DataFrame(liveabc)
+    print("df : ",df)
+    df.replace({0:'angry',1:'disgust',2:'fear', 3:'happy', 4:'neutral', 5:'sad',6:'surprise',7: 'calm'}, inplace=True)
+    r=df.iloc[0,0]
+    
+    print("R ", r )
+    return r
 
 @app.route('/')
 def index():
@@ -27,6 +83,30 @@ def login():
             # return 'Login successful!'
             return redirect(url_for("home"))
     return render_template('login.html')
+
+@app.route('/predict', methods=['GET', 'POST'])
+def predict():
+    if os.path.exists("uploaded_audio.wav"):
+        os.remove("uploaded_audio.wav")
+    if "fileup" not in request.files:
+        return "No file uploaded"
+    fileup = request.files["fileup"];
+    fileup.save('uploaded_audio.wav')
+    if fileup.filename == '':
+        return "No file selected"
+    file_names = list(request.files.keys())
+    print(file_names)
+    print("File uploaded")
+    m_arr = preprocessing('uploaded_audio.wav')
+    print("preprocessing done")
+    prediction=model.predict(m_arr)
+    print("Predict done")
+    result=res(prediction)
+    return render_template('index.html',pred='Emotion = {}'.format(result))
+
+@app.route('/audio')
+def play_audio():
+    return send_file('G://BE_Project/uploaded_audio.wav', mimetype='audio/wav')
 
 @app.route('/signin')
 def signin():
