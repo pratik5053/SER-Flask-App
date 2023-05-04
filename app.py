@@ -6,6 +6,7 @@ import pandas as pd
 import soundfile as sf
 from tensorflow import keras
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
 from keras.models import load_model
 import pickle
 
@@ -41,9 +42,17 @@ def preprocessing(audio):
 
 def waveform(audio):
     data, sampling_rate = librosa.load(audio,sr=16000)
-    plt.figure(figsize=(15, 5))
+    # plt.figure(figsize=(15, 5))
     librosa.display.waveshow(data, sr=sampling_rate)
     plt.savefig('waveform.png')
+
+def mfcc_img(audio):
+    data, sampling_rate = librosa.load(audio,sr=16000)
+    # Extract 'n_mfcc' numbers of MFCCs components - in this case 20
+    x_mfccs = librosa.feature.mfcc(y=data, sr=sampling_rate, n_mfcc=20)
+    # Plot MFCCs
+    librosa.display.specshow(x_mfccs, sr=sampling_rate, x_axis="time", norm=Normalize(vmin=-50, vmax=50))
+    plt.savefig('mfcc.png')
 
 def res(pred_arr):
     print(pred_arr)
@@ -88,15 +97,21 @@ def login():
 def predict():
     if os.path.exists("uploaded_audio.wav"):
         os.remove("uploaded_audio.wav")
+    if os.path.exists("waveform.png"):
+        os.remove("waveform.png")
+    if os.path.exists("mfcc.png"):
+        os.remove("mfcc.png")
     if "fileup" not in request.files:
         return "No file uploaded"
-    fileup = request.files["fileup"];
+    fileup = request.files["fileup"]
     fileup.save('uploaded_audio.wav')
     if fileup.filename == '':
         return "No file selected"
     file_names = list(request.files.keys())
     print(file_names)
     print("File uploaded")
+    waveform('uploaded_audio.wav')
+    mfcc_img('uploaded_audio.wav')
     m_arr = preprocessing('uploaded_audio.wav')
     print("preprocessing done")
     prediction=model.predict(m_arr)
@@ -107,6 +122,14 @@ def predict():
 @app.route('/audio')
 def play_audio():
     return send_file('G://BE_Project/uploaded_audio.wav', mimetype='audio/wav')
+
+@app.route('/waveform')
+def display_waveform():
+    return send_file('G://BE_Project/waveform.png', mimetype='img/png')
+
+@app.route('/mfcc')
+def display_mfcc():
+    return send_file('G://BE_Project/mfcc.png', mimetype='img/png')
 
 @app.route('/signin')
 def signin():
