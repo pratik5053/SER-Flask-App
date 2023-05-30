@@ -2,15 +2,15 @@
 {% block body %}
 
 <div class="cont">
-    Welcome,<span id="blink">|</span>
+    <h2>Upload the file</h2>
 </div>
 
 <div class="uinput">
     <form method="POST" action="/predict" enctype="multipart/form-data">
-        <input type="file" accept="audio/wav" name="fileup">
+        <input type="file" id="file" accept="audio/wav,audio/mpeg" name="fileup" onchange="return fileValidation()">
         <label for="fileup">Select an Audio file</label>
         <input type="reset" value="Reset">
-        <input type="submit" value="Submit">
+        <input id="btn" type="submit" value="Submit" onclick="displayElement()">
     </form>
 </div>
 
@@ -25,23 +25,60 @@
     <!-- pred -->
 </div>
 <div class="pic">
-    <div class="lbl">
-        <h2>WaveForm 01</h2>
-        <img src="{{ url_for('display_waveform') }}" alt="waveform" srcset="">
+    <div class="heading">
+        <h2>Analyzing Audio ...</h2>
     </div>
-    <div class="lbl">
-        <h2>WaveForm 02</h2>
-        <img src="{{ url_for('display_mfcc') }}" alt="mfcc" srcset="">
+    <div class="img_cont">
+        <div class="lbl">
+            <p>WaveForm</p>
+            <img src="{{ url_for('display_waveform') }}" alt="waveform" srcset="">
+        </div>
+        <div class="lbl">
+            <p>MFCC</p>
+            <img src="{{ url_for('display_mfcc') }}" alt="mfcc" srcset="">
+        </div>
+    </div>
+</div>
+<div class="pic">
+    <div class="heading">
+        <h2>Predictions ...</h2>
+    </div>
+    <div class="img_cont">
+        <div class="lbl">
+            <p>PyChart<p>
+            <img src="{{ url_for('display_pychart') }}" alt="pychart" srcset="">
+        </div>
     </div>
 </div>
 <script type="text/javascript">
-    var blink =
-        document.getElementById('blink');
 
-    setInterval(function () {
-        blink.style.opacity =
-            (blink.style.opacity == 0 ? 1 : 0);
-    }, 500); 
+    function displayElement() {
+        document.getElementsByClassName("audio").style.visibility = "hidden";
+        document.getElementsByClassName("output").style.visibility = "hidden";
+        document.getElementsByClassName("pic").style.visibility = "hidden";
+    }
+
+    var button = document.getElementById("btn");
+
+    button.addEventListener("click", function () {
+        // Set a timeout of 10 seconds
+        setTimeout(displayElement, 10000);
+    });
+
+    function fileValidation() {
+        var fileInput = document.getElementById('file');
+
+        var filePath = fileInput.value;
+
+        // Allowing file type
+        var allowedExtensions = /(\.mp3|\.wav)$/i;
+
+        if (!allowedExtensions.exec(filePath)) {
+            alert('Invalid file type');
+            fileInput.value = '';
+            return false;
+        }
+    }
 </script>
 </body>
 

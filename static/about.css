@@ -688,6 +688,7 @@ img {
 
 footer {
   text-align: center;
+  color: white;
 }
 
 @media (min-width: 62rem) {
